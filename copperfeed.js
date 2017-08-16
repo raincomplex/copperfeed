@@ -2,7 +2,7 @@
 (function() {
 
     var config = CopperfeedConfig;
-    var $cf;
+    var $cf, $header, $content;
     
     function makeWidgetDiv() {
         var div = document.createElement('div');
@@ -27,32 +27,48 @@
         }
     }
 
+    function statusMessage(msg) {
+        $cf.html($('<p/>', {'class': 'status'}).text(msg));
+    }
+    
     function initWidget() {
         $cf = $('#copperfeed');
-        $cf.html($('<p/>', {'class': 'loading'}).text('Loading RSS feed...'));
+        statusMessage('Loading RSS feed...');
         $.get(config.feedurl, gotFeedData, 'xml').fail(errorFeedData);
     }
 
     function errorFeedData() {
-        $cf.html($('<p/>', {'class': 'loading'}).text('Error retrieving RSS feed.'));
+        statusMessage('Error retrieving RSS feed.');
+    }
+
+    function getXMLFields($xmldata) {
+        var $fields = $xmldata.children();
+        var item = {};
+        for (var k = 0; k < $fields.length; k++) {
+            var $field = $($fields[k]);
+            item[$field.prop('tagName')] = $field.text();
+        }
+        return item;
     }
     
     function gotFeedData(data) {
         $cf.empty();
+
+        var channel = getXMLFields($(data).find('channel'));
         
+        $header = $('<div/>', {'class': 'header'});
+        $content = $('<div/>', {'class': 'content'});
+        $header.append($('<h1/>', {'class': 'title'}).text(channel['title']));
+        $header.append($('<p/>', {'class': 'description'}).html(channel['description']));
+        $cf.append($header);
+        $cf.append($content);
+
         var $items = $(data).find('item');
         for (var i = 0; i < $items.length; i++) {
-            var $fields = $($items[i]).children();
-            var item = {};
-            for (var k = 0; k < $fields.length; k++) {
-                var $field = $($fields[k]);
-                item[$field.prop('tagName')] = $field.text();
-            }
-
-            addItem(item);
+            addItem(getXMLFields($($items[i])));
         }
 
-        $cf.scrollTop(0);
+        $content.scrollTop(0);
         
         if (config.autoscroll) {
             scrollTimerID = setInterval(scrollNextItem, 1000 * (config.autoscrolltime || 5));
@@ -65,7 +81,7 @@
         $div.append($('<h1/>', {'class': 'title'}).text(item['title']));
         $div.append($('<p/>', {'class': 'description'}).html(item['description']));
 
-        $cf.append($div);
+        $content.append($div);
     }
 
     var currentItem = 0;
@@ -73,9 +89,7 @@
     var scrollTimerID;
     
     function scrollNextItem() {
-        var $box = $cf;
-
-        if ($box.scrollTop() != lastScrollTop) {
+        if ($content.scrollTop() != lastScrollTop) {
             // user scrolled, stop autoscroll
             clearInterval(scrollTimerID);
             return;
@@ -83,17 +97,18 @@
         
         currentItem++;
         
-        var $items = $cf.find('.item');
+        var $items = $content.find('.item');
         if (currentItem >= $items.length)
             currentItem = 0;
         var $dest = $($items[currentItem]);
 
-        var anim = {scrollTop: $box.scrollTop() + $dest.offset().top};
+        var pad = ($dest.outerHeight(true) - $dest.outerHeight()) / 2;
+        var anim = {scrollTop: $content.scrollTop() + $dest.offset().top - $content.offset().top - pad};
         var time = 1000 * (config.scrolltime || .25);
         var complete = function() {
-            lastScrollTop = $box.scrollTop();
+            lastScrollTop = $content.scrollTop();
         };
-        $box.animate(anim, time, complete);
+        $content.animate(anim, time, complete);
     }
 
     makeWidgetDiv();

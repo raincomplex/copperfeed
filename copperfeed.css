@@ -4,11 +4,26 @@
     background-color: #e7e7e7;
     height: 300px;
     width: 400px;
-    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
 }
 
-#copperfeed .loading {
+#copperfeed .status {
     text-align: center;
+}
+
+#copperfeed .header {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    background-color: #eee;
+}
+
+#copperfeed .header > :first-child { margin-top: 0; }
+#copperfeed .header > :last-child { margin-bottom: 0; }
+
+#copperfeed .content {
+    overflow-y: scroll;
+    flex-grow: 1;
 }
 
 #copperfeed .item {
@@ -26,5 +41,5 @@
     font-size: 1em;
 }
 
-#copperfeed .desc {
+#copperfeed .description {
 }
