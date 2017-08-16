@@ -1,0 +1,30 @@
+
+#copperfeed {
+    border: 1px solid #ccc;
+    background-color: #e7e7e7;
+    height: 300px;
+    width: 400px;
+    overflow-y: scroll;
+}
+
+#copperfeed .loading {
+    text-align: center;
+}
+
+#copperfeed .item {
+    border: 1px solid #ccc;
+    background-color: #eee;
+    padding: 10px;
+    margin: 10px;
+}
+
+#copperfeed .item > :first-child { margin-top: 0; }
+#copperfeed .item > :last-child { margin-bottom: 0; }
+
+#copperfeed .title {
+    font-weight: bold;
+    font-size: 1em;
+}
+
+#copperfeed .desc {
+}
