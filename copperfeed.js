@@ -3,6 +3,7 @@
 
     var config = CopperfeedConfig;
     var $cf, $header, $content;
+    var $;
     
     function makeWidgetDiv() {
         var div = document.createElement('div');
@@ -11,20 +12,17 @@
     }
     
     function initJQuery(callback) {
-        if (typeof(jQuery) == 'undefined') {
-            var tag = document.createElement('script');
-            tag.src = 'https://code.jquery.com/jquery-3.2.1.min.js';
-            /* getting error "https://code.jquery.com/jquery-3.2.1.min.js is not eligible for integrity checks since it's neither CORS-enabled nor same-origin."
-            tag.integrity = 'sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=';
-            tag.crossorigin = 'anonymous';
-            */
-            tag.onload = function() {
-                callback();
-            };
-            document.head.appendChild(tag);
-        } else {
+        var tag = document.createElement('script');
+        tag.src = 'https://code.jquery.com/jquery-3.2.1.min.js';
+        /* getting error "https://code.jquery.com/jquery-3.2.1.min.js is not eligible for integrity checks since it's neither CORS-enabled nor same-origin."
+           tag.integrity = 'sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=';
+           tag.crossorigin = 'anonymous';
+        */
+        tag.onload = function() {
+            $ = jQuery.noConflict(true);
             callback();
-        }
+        };
+        document.head.appendChild(tag);
     }
 
     function statusMessage(msg) {
