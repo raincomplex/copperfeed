@@ -18,6 +18,15 @@
     background-color: #eee;
 }
 
+#copperfeed .channelimage {
+    float: left;
+}
+
+#copperfeed .channelimage img {
+    max-width: 125px;
+    max-height: 125px;
+}
+
 #copperfeed .header > :first-child { margin-top: 0; }
 #copperfeed .header > :last-child { margin-bottom: 0; }
 

@@ -53,9 +53,16 @@
         $cf.empty();
 
         var channel = getXMLFields($(data).find('channel'));
-        
         $header = $('<div/>', {'class': 'header'});
         $content = $('<div/>', {'class': 'content'});
+
+        var image = getXMLFields($(data).find('channel image'));
+        if (image) {
+            var $image = $('<img/>', {'src': image['url'], 'title': image['title']});
+            var $link = $('<a/>', {'class': 'channelimage', 'href': image['link']}).append($image);
+            $header.append($link);
+        }
+        
         $header.append($('<h1/>', {'class': 'title'}).text(channel['title']));
         $header.append($('<p/>', {'class': 'description'}).html(channel['description']));
         $cf.append($header);
